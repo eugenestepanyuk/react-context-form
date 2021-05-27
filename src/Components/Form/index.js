@@ -1,7 +1,4 @@
-import { useContext } from "react";
 import { Form, Button } from "antd";
-import { FormContext } from "../../Context/form.context";
-import { DrawerProvider } from "../../Context/drawer.context";
 import Drawer from "../Drawer";
 
 const layout = {
@@ -20,39 +17,29 @@ const tailLayout = {
 };
 
 export default function FormComponent() {
-  const formContext = useContext(FormContext);
+  function onFormFinish(values) {
+    console.log("Success:", values);
+  }
 
-  const onFinish = () => {
-    console.log("Success:", formContext.content);
-  };
+  function onFormFailed(error) {
+    console.log("Failed:", error);
+  }
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const checkPrice = (subject) => {
-    console.log("subject: ", subject);
-    console.log("value: ", formContext.content[subject.field]);
-
+  function validator(subject, value) {
     return new Promise((resolve, reject) => {
-      if (!formContext.content[subject.field]) {
+      if (!value.content) {
         return reject(new Error(subject.message));
       }
 
       return resolve();
     });
-  };
+  }
 
   return (
     <Form
       {...layout}
-      name="basic"
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      initialValues={{
-        department: formContext.content.department,
-        category: formContext.content.category,
-      }}
+      onFinish={onFormFinish}
+      onFinishFailed={onFormFailed}
       style={{ marginTop: "10%" }}
     >
       <Form.Item
@@ -62,13 +49,11 @@ export default function FormComponent() {
           {
             required: true,
             message: "Please select department!",
-            validator: checkPrice,
+            validator: validator,
           },
         ]}
       >
-        <DrawerProvider type="department">
-          <Drawer /* type={'department'} */ name="department" />
-        </DrawerProvider>
+        <Drawer name="department" />
       </Form.Item>
 
       <Form.Item
@@ -78,13 +63,11 @@ export default function FormComponent() {
           {
             required: true,
             message: "Please select category!",
-            validator: checkPrice,
+            validator: validator,
           },
         ]}
       >
-        <DrawerProvider type="category">
-          <Drawer /* type={'category'} */ name="category" />
-        </DrawerProvider>
+        <Drawer name="category" />
       </Form.Item>
 
       <Form.Item {...tailLayout}>

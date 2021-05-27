@@ -1,14 +1,9 @@
-import 'antd/dist/antd.css';
-import { FormProvider } from './Context/form.context';
+import "antd/dist/antd.css";
 
-import Form from './Components/Form';
+import Form from "./Components/Form";
 
 function App() {
-  return (
-    <FormProvider>
-      <Form />
-    </FormProvider>
-  );
+  return <Form />;
 }
 
 export default App;

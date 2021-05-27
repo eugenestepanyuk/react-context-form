@@ -1,16 +1,26 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Drawer, Button, Input, Table } from "antd";
 import { EllipsisOutlined, CloseOutlined } from "@ant-design/icons";
-import { FormContext } from "../../Context/form.context";
-import { DrawerContext } from "../../Context/drawer.context";
 import { departmentColumns, categoryColumns } from "../utils/columns";
 import { departmentData, categoryData } from "../utils/data";
 
-export default function DrawerComponent({ name, value = {}, onChange }) {
+/**
+ * @type {{ [key: string]: { columns: () => any, data: () => any } }}
+ */
+const INITIAL_VALUES = {
+  department: {
+    columns: departmentColumns,
+    data: departmentData,
+  },
+  category: {
+    columns: categoryColumns,
+    data: categoryData,
+  },
+};
+
+export default function DrawerComponent({ value = {}, onChange, name }) {
   const [visible, setVisible] = useState(false);
-  const [content /* setContent */] = useState(null);
-  const formContext = useContext(FormContext);
-  const drawerContext = useContext(DrawerContext);
+  const [content, setContent] = useState();
 
   const showDrawer = () => {
     setVisible(true);
@@ -20,18 +30,11 @@ export default function DrawerComponent({ name, value = {}, onChange }) {
     setVisible(false);
   };
 
-  let columns,
-    data = null;
-  columns =
-    drawerContext.type === "department"
-      ? departmentColumns()
-      : categoryColumns();
-  data =
-    drawerContext.type === "department" ? departmentData() : categoryData();
+  const columns = INITIAL_VALUES[name].columns();
+  const data = INITIAL_VALUES[name].data();
 
   const onClickRow = (record) => {
-    console.log("record: ", record);
-    onContentChange(record[drawerContext.type]);
+    onContentChange(record[name]);
   };
 
   const triggerChange = (changedValue) => {
@@ -42,22 +45,13 @@ export default function DrawerComponent({ name, value = {}, onChange }) {
     });
   };
 
-  const onContentChange = (value) => {
-    const newContent = value;
-
-    if (value !== null) {
-      formContext.сhangeContent(name, newContent);
-      // setContent(newContent);
-    }
-
-    triggerChange({
-      content: newContent,
-    });
+  const onContentChange = (content) => {
+    setContent(content);
+    triggerChange({ content });
   };
 
   const onClearContent = () => {
-    formContext.сhangeContent(name, undefined);
-    // setContent(null);
+    setContent(undefined);
     triggerChange({
       content: undefined,
     });
@@ -65,10 +59,7 @@ export default function DrawerComponent({ name, value = {}, onChange }) {
 
   return (
     <div style={{ display: "flex" }}>
-      <Input
-        name={name}
-        value={/* value.content || content */ formContext.content[name]}
-      />
+      <Input name={name} value={value.content || content} />
       <Button icon={<EllipsisOutlined />} onClick={showDrawer} />
       <Button icon={<CloseOutlined />} onClick={onClearContent} />
       <Drawer
