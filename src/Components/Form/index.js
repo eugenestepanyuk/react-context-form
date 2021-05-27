@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Form, Button } from 'antd';
 import { FormContext } from '../../Context/form.context';
-// import { DrawerProvider } from '../../Context/drawer.context';
+import { DrawerProvider } from '../../Context/drawer.context';
 import Drawer from '../Drawer';
 
 const layout = {
@@ -62,12 +62,12 @@ export default function FormComponent() {
                     },
                 ]}
             >
-                {/* <DrawerProvider type={'department'}> */}
-                    <Drawer type={'department'} />
-                {/* </DrawerProvider> */}
+                <DrawerProvider type={'department'}>
+                    <Drawer /* type={'department'} */ />
+                </DrawerProvider>
             </Form.Item>
 
-            {/* <Form.Item
+            <Form.Item
                 label="Category"
                 name="category"
                 rules={[
@@ -79,9 +79,9 @@ export default function FormComponent() {
                 ]}
             >
                 <DrawerProvider type={'category'}>
-                    <Drawer type={'category'} />
+                    <Drawer /* type={'category'} */ />
                 </DrawerProvider>
-            </Form.Item> */}
+            </Form.Item>
 
             <Form.Item {...tailLayout}>
                 <Button type="primary" htmlType="submit">

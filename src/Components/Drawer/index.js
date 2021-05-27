@@ -2,16 +2,17 @@ import { useState, useContext } from 'react';
 import { Drawer, Button, Input, Table } from 'antd';
 import { EllipsisOutlined, CloseOutlined } from '@ant-design/icons';
 import { FormContext } from '../../Context/form.context';
-// import { DrawerContext } from '../../Context/drawer.context';
+import { DrawerContext } from '../../Context/drawer.context';
 import { departmentColumns, categoryColumns} from '../utils/columns';
 import { departmentData, categoryData} from '../utils/data';
 
 
-export default function DrawerComponent({ value = {}, onChange, type }) {
+export default function DrawerComponent({ value = {}, onChange, /* type */ }) {
+    console.log('value: ', value);
     const [visible, setVisible] = useState(false);
     const [content, /* setContent */] = useState(null);
     const formContext = useContext(FormContext);
-    // const drawerContext = useContext(DrawerContext);
+    const drawerContext = useContext(DrawerContext);
 
     const showDrawer = () => {
         setVisible(true);
@@ -21,8 +22,8 @@ export default function DrawerComponent({ value = {}, onChange, type }) {
     };
 
     let columns, data = null; 
-    columns = type === 'department' ? departmentColumns() : categoryColumns();
-    data = type === 'department' ? departmentData() : categoryData();
+    columns = drawerContext.type === 'department' ? departmentColumns() : categoryColumns();
+    data = drawerContext.type === 'department' ? departmentData() : categoryData();
 
     const onClickRow = (record) => {
         console.log('record: ', record);
