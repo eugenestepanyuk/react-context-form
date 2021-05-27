@@ -22,21 +22,25 @@ const tailLayout = {
 export default function FormComponent() {
   const formContext = useContext(FormContext);
 
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const onFinish = () => {
+    console.log("Success:", formContext.content);
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  const checkPrice = (_, value) => {
-    console.log("value: ", value);
-    if (value.content !== null && value.content !== "") {
-      return Promise.resolve();
-    }
+  const checkPrice = (subject) => {
+    console.log("subject: ", subject);
+    console.log("value: ", formContext.content[subject.field]);
 
-    return Promise.reject(new Error(_.message));
+    return new Promise((resolve, reject) => {
+      if (!formContext.content[subject.field]) {
+        return reject(new Error(subject.message));
+      }
+
+      return resolve();
+    });
   };
 
   return (
@@ -46,8 +50,8 @@ export default function FormComponent() {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       initialValues={{
-        department: { content: /* null */ formContext.content.department },
-        category: { content: formContext.content.category },
+        department: formContext.content.department,
+        category: formContext.content.category,
       }}
       style={{ marginTop: "10%" }}
     >
@@ -79,7 +83,7 @@ export default function FormComponent() {
         ]}
       >
         <DrawerProvider type="category">
-          <Drawer /* type={'category'} */ name="categry" />
+          <Drawer /* type={'category'} */ name="category" />
         </DrawerProvider>
       </Form.Item>
 

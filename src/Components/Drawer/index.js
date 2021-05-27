@@ -6,12 +6,7 @@ import { DrawerContext } from "../../Context/drawer.context";
 import { departmentColumns, categoryColumns } from "../utils/columns";
 import { departmentData, categoryData } from "../utils/data";
 
-export default function DrawerComponent({
-  name,
-  value = {},
-  onChange /* type */,
-}) {
-  console.log("value: ", value);
+export default function DrawerComponent({ name, value = {}, onChange }) {
   const [visible, setVisible] = useState(false);
   const [content /* setContent */] = useState(null);
   const formContext = useContext(FormContext);
@@ -20,6 +15,7 @@ export default function DrawerComponent({
   const showDrawer = () => {
     setVisible(true);
   };
+
   const onClose = () => {
     setVisible(false);
   };
@@ -63,7 +59,7 @@ export default function DrawerComponent({
     formContext.сhangeContent(name, undefined);
     // setContent(null);
     triggerChange({
-      content: null,
+      content: undefined,
     });
   };
 
