@@ -67,7 +67,7 @@ export default function FormComponent() {
                 {/* </DrawerProvider> */}
             </Form.Item>
 
-            <Form.Item
+            {/* <Form.Item
                 label="Category"
                 name="category"
                 rules={[
@@ -78,10 +78,10 @@ export default function FormComponent() {
                     },
                 ]}
             >
-                {/* <DrawerProvider type={'category'}> */}
+                <DrawerProvider type={'category'}>
                     <Drawer type={'category'} />
-                {/* </DrawerProvider> */}
-            </Form.Item>
+                </DrawerProvider>
+            </Form.Item> */}
 
             <Form.Item {...tailLayout}>
                 <Button type="primary" htmlType="submit">
