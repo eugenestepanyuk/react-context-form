@@ -1,8 +1,5 @@
-import { useContext } from "react";
-import { Form, Button } from "antd";
-import { FormContext } from "../../Context/form.context";
-import { DrawerProvider } from "../../Context/drawer.context";
-import Drawer from "../Drawer";
+import { Form, Button } from 'antd';
+import Drawer from '../Drawer';
 
 const layout = {
   labelCol: {
@@ -20,38 +17,30 @@ const tailLayout = {
 };
 
 export default function FormComponent() {
-  const formContext = useContext(FormContext);
-
-  const onFinish = () => {
-    console.log("Success:", formContext.content);
+  const onFinish = (values) => {
+    console.log("Success:", values);
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  const checkPrice = (subject) => {
-    console.log("subject: ", subject);
-    console.log("value: ", formContext.content[subject.field]);
+  const checkPrice = (_, value) => {
+    if (value.content) {
+      return Promise.resolve();
+    }
 
-    return new Promise((resolve, reject) => {
-      if (!formContext.content[subject.field]) {
-        return reject(new Error(subject.message));
-      }
-
-      return resolve();
-    });
+    return Promise.reject(new Error(_.message));
   };
 
   return (
     <Form
       {...layout}
-      name="basic"
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       initialValues={{
-        department: formContext.content.department,
-        category: formContext.content.category,
+        department: { content: null },
+        category: { content: null },
       }}
       style={{ marginTop: "10%" }}
     >
@@ -66,9 +55,7 @@ export default function FormComponent() {
           },
         ]}
       >
-        <DrawerProvider type="department">
-          <Drawer /* type={'department'} */ name="department" />
-        </DrawerProvider>
+          <Drawer name="department" />
       </Form.Item>
 
       <Form.Item
@@ -82,9 +69,7 @@ export default function FormComponent() {
           },
         ]}
       >
-        <DrawerProvider type="category">
-          <Drawer /* type={'category'} */ name="category" />
-        </DrawerProvider>
+          <Drawer name="category" />
       </Form.Item>
 
       <Form.Item {...tailLayout}>
