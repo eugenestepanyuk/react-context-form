@@ -1,16 +1,12 @@
-import { createContext, useState } from 'react';
+import { createContext } from 'react';
 
 const DrawerContext = createContext();
 
-function DrawerProvider(props) {
-    const [content, setContent] = useState(null);
-    const сhangeContent = (value) => {
-        setContent(value)
-    };
+function DrawerProvider({children, type}) {
 
     return (
-        <DrawerContext.Provider value={{ content, сhangeContent }}>
-            {props.children}
+        <DrawerContext.Provider value={{ type }}>
+            {children}
         </DrawerContext.Provider>
     );
 }

@@ -1,11 +1,17 @@
 import { useState, useContext } from 'react';
 import { Drawer, Button, Input, Table } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
-import { DrawerContext } from '../../Context/drawer.context';
+import { EllipsisOutlined, CloseOutlined } from '@ant-design/icons';
+import { FormContext } from '../../Context/form.context';
+// import { DrawerContext } from '../../Context/drawer.context';
+import { departmentColumns, categoryColumns} from '../utils/columns';
+import { departmentData, categoryData} from '../utils/data';
 
-export default function DrawerComponent() {
+
+export default function DrawerComponent({ value = {}, onChange, type }) {
     const [visible, setVisible] = useState(false);
-    const drawerContext = useContext(DrawerContext);
+    const [content, /* setContent */] = useState(null);
+    const formContext = useContext(FormContext);
+    // const drawerContext = useContext(DrawerContext);
 
     const showDrawer = () => {
         setVisible(true);
@@ -14,28 +20,49 @@ export default function DrawerComponent() {
         setVisible(false);
     };
 
-    const columns = [
-        {
-            dataIndex: 'department',
-            key: 'department',
-        },
-    ];
-
-    const data = [
-        { id: 1, department: 'Logistics' },
-        { id: 2, department: 'Marketing' },
-        { id: 3, department: 'IT' },
-        { id: 4, department: 'Management' }
-    ];
+    let columns, data = null; 
+    columns = type === 'department' ? departmentColumns() : categoryColumns();
+    data = type === 'department' ? departmentData() : categoryData();
 
     const onClickRow = (record) => {
-        drawerContext.сhangeContent(record.department);
+        console.log('record: ', record);
+        onContentChange(record.department);
     };
+
+    const triggerChange = (changedValue) => {
+        onChange?.({
+            content,
+            ...value,
+            ...changedValue,
+        });
+    };
+
+    const onContentChange = (value) => {
+        const newContent = value;
+
+        if (value !== null) {
+            formContext.сhangeContent(newContent);
+            // setContent(newContent);
+        };
+
+        triggerChange({
+            content: newContent,
+        });
+    }
+
+    const onClearContent = () => {
+        formContext.сhangeContent(null);
+        // setContent(null);
+        triggerChange({
+            content: null,
+        });
+    }
 
     return (
         <div style={{ display: 'flex' }}>
-            <Input value={drawerContext.content} />
+            <Input value={/* value.content || content */ formContext.content} />
             <Button icon={<EllipsisOutlined />} onClick={showDrawer} />
+            <Button icon={<CloseOutlined />} onClick={onClearContent} />
             <Drawer
                 key="top"
                 placement="top"
