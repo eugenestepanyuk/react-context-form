@@ -1,5 +1,6 @@
-import { Form, Button } from 'antd';
-import Drawer from '../Drawer';
+
+import { Form, Button } from "antd";
+import Drawer from "../Drawer";
 
 const layout = {
   labelCol: {
@@ -17,31 +18,29 @@ const tailLayout = {
 };
 
 export default function FormComponent() {
-  const onFinish = (values) => {
+  function onFormFinish(values) {
     console.log("Success:", values);
-  };
+  }
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+  function onFormFailed(error) {
+    console.log("Failed:", error);
+  }
 
-  const checkPrice = (_, value) => {
-    if (value.content) {
-      return Promise.resolve();
-    }
+  function validator(subject, value) {
+    return new Promise((resolve, reject) => {
+      if (!value.content) {
+        return reject(new Error(subject.message));
+      }
 
-    return Promise.reject(new Error(_.message));
-  };
+      return resolve();
+    });
+  }
 
   return (
     <Form
       {...layout}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      initialValues={{
-        department: { content: null },
-        category: { content: null },
-      }}
+      onFinish={onFormFinish}
+      onFinishFailed={onFormFailed}
       style={{ marginTop: "10%" }}
     >
       <Form.Item
@@ -51,11 +50,11 @@ export default function FormComponent() {
           {
             required: true,
             message: "Please select department!",
-            validator: checkPrice,
+            validator: validator,
           },
         ]}
       >
-          <Drawer name="department" />
+        <Drawer name="department" />
       </Form.Item>
 
       <Form.Item
@@ -65,11 +64,11 @@ export default function FormComponent() {
           {
             required: true,
             message: "Please select category!",
-            validator: checkPrice,
+            validator: validator,
           },
         ]}
       >
-          <Drawer name="category" />
+        <Drawer name="category" />
       </Form.Item>
 
       <Form.Item {...tailLayout}>

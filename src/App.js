@@ -1,11 +1,10 @@
+
 import 'antd/dist/antd.css';
 
-import Form from './Components/Form';
+import Form from "./Components/Form";
 
 function App() {
-  return (
-    <Form />
-  );
+  return <Form />;
 }
 
 export default App;

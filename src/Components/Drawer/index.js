@@ -1,13 +1,27 @@
-import { useState } from 'react';
-import { Drawer, Button, Input, Table } from 'antd';
-import { EllipsisOutlined, CloseOutlined } from '@ant-design/icons';
-import { departmentColumns, categoryColumns } from '../utils/columns';
-import { departmentData, categoryData } from '../utils/data';
+
+import { useState } from "react";
+import { Drawer, Button, Input, Table } from "antd";
+import { EllipsisOutlined, CloseOutlined } from "@ant-design/icons";
+import { departmentColumns, categoryColumns } from "../utils/columns";
+import { departmentData, categoryData } from "../utils/data";
+
+/**
+ * @type {{ [key: string]: { columns: () => any, data: () => any } }}
+ */
+const INITIAL_VALUES = {
+  department: {
+    columns: departmentColumns,
+    data: departmentData,
+  },
+  category: {
+    columns: categoryColumns,
+    data: categoryData,
+  },
+};
 
 export default function DrawerComponent({ value = {}, onChange, name }) {
-  console.log('value2: ', value);
   const [visible, setVisible] = useState(false);
-  const [content, setContent] = useState(null);
+  const [content, setContent] = useState();
 
   const showDrawer = () => {
     setVisible(true);
@@ -17,12 +31,11 @@ export default function DrawerComponent({ value = {}, onChange, name }) {
     setVisible(false);
   };
 
-  let columns, data = null;
-  columns = name === "department" ? departmentColumns() : categoryColumns();
-  data = name === "department" ? departmentData() : categoryData();
+  const columns = INITIAL_VALUES[name].columns();
+  const data = INITIAL_VALUES[name].data();
 
   const onClickRow = (record) => {
-    onContentChange(name === "department" ? record.department : record.category);
+    onContentChange(record[name]);
   };
 
   const triggerChange = (changedValue) => {
@@ -33,20 +46,13 @@ export default function DrawerComponent({ value = {}, onChange, name }) {
     });
   };
 
-  const onContentChange = (value) => {
-    const newContent = value;
-
-    if (value !== null) {
-      setContent(newContent);
-    }
-
-    triggerChange({
-      content: newContent,
-    });
+  const onContentChange = (content) => {
+    setContent(content);
+    triggerChange({ content });
   };
 
   const onClearContent = () => {
-    setContent(null);
+    setContent(undefined);
     triggerChange({
       content: undefined,
     });
